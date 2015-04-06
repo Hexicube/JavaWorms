@@ -1,12 +1,11 @@
-package org.tilegames.hexicube.gunproto;
-
+package org.tilegames.hexicube.worms;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class FontHolder
 {
-	public static Texture font, numberFont;
+	public static Texture font;
 	public static FontChar[] characterList;
 	
 	public static void prep()
@@ -105,7 +104,7 @@ public class FontHolder
 		characterList[89] = new FontChar("{".charAt(0), 5, 4, 3);
 		characterList[90] = new FontChar("}".charAt(0), 6, 4, 3);
 		characterList[91] = new FontChar("|".charAt(0), 7, 4, 1);
-		characterList[92] = new FontChar("|".charAt(0), 8, 4, 1);
+		characterList[92] = new FontChar("¦".charAt(0), 8, 4, 1);
 		characterList[93] = new FontChar("@".charAt(0), 9, 4, 5);
 		characterList[94] = new FontChar("?".charAt(0), 10, 4, 5);
 	}
@@ -140,14 +139,25 @@ public class FontHolder
 		for(int a = 0; a < charList.length; a++)
 		{
 			if(charList[a] == 255) xPos += 3;
-			else if(charList[a] == 254);
+			else if(charList[a] == 254)
+			;
 			else
 			{
-				xPos += characterList[charList[a]].width+1;
+				xPos += characterList[charList[a]].width + 1;
 			}
 		}
 		if(doubleScale) xPos *= 2;
 		return xPos;
+	}
+	
+	public static boolean isValid(char key)
+	{
+		if(key == " ".charAt(0)) return true;
+		for(int a = 0; a < characterList.length; a++)
+		{
+			if(characterList[a].character == key) return true;
+		}
+		return false;
 	}
 	
 	public static void render(SpriteBatch batch, char[] charList, int x, int y, boolean doubleScale)
@@ -155,12 +165,13 @@ public class FontHolder
 		int xPos = 0;
 		for(int a = 0; a < charList.length; a++)
 		{
-			if(charList[a] == 255) xPos += doubleScale?6:3;
-			else if(charList[a] == 254);
+			if(charList[a] == 255) xPos += doubleScale ? 6 : 3;
+			else if(charList[a] == 254)
+			;
 			else
 			{
-				batch.draw(font, x + xPos, y - (doubleScale?18:9), (doubleScale?10:5), doubleScale?18:9, characterList[charList[a]].x*6, characterList[charList[a]].y*10, 5, 9, false, false);
-				xPos += (characterList[charList[a]].width+1)*(doubleScale?2:1);
+				batch.draw(font, x + xPos, y - (doubleScale ? 18 : 9), (doubleScale ? 10 : 5), doubleScale ? 18 : 9, characterList[charList[a]].x * 6, characterList[charList[a]].y * 10, 5, 9, false, false);
+				xPos += (characterList[charList[a]].width + 1) * (doubleScale ? 2 : 1);
 			}
 		}
 	}

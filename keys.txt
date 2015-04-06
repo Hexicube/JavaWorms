@@ -1,0 +1,8 @@
+Left:29
+Right:32
+Up:51
+Down:47
+Look:129
+Inventory:37
+Use:33
+Pause:131

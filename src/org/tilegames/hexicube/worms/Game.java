@@ -1,12 +1,21 @@
-package org.tilegames.hexicube.gunproto;
+package org.tilegames.hexicube.worms;
 
+import java.awt.Image;
+import java.awt.Window;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+
+import org.tilegames.hexicube.worms.gui.*;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,12 +34,33 @@ public class Game implements ApplicationListener, InputProcessor
 	
 	private static float currentDeltaPassed;
 	
-	public static boolean[] keysDown;
-	public static boolean[] keyPress;
+	public static KeyHandler keys;
+	public static SoundHandler sounds;
 	
 	public static Random rand;
 	
 	private static boolean paused = false;
+	
+	
+	public static int width, height;
+	
+	public static GuiElementTextInput currentlyTyping;
+	public static GuiElementDraggable currentlyDragging;
+	
+	public static GuiManager menu;
+	
+	public static void setMenu(GuiManager newMenu)
+	{
+		if(newMenu == null)
+		{
+			if(menu != null) menu = menu.parent;
+		}
+		else
+		{
+			newMenu.parent = menu;
+			menu = newMenu;
+		}
+	}
 	
 	@Override
 	public void create()
@@ -49,8 +79,20 @@ public class Game implements ApplicationListener, InputProcessor
 		
 		currentDeltaPassed = 0;
 		
-		keysDown = new boolean[512];
-		keyPress = new boolean[512];
+		keys = new KeyHandler(new File("keys.txt"));
+		sounds = new SoundHandler(new File("sounds.txt"));
+		
+		ArrayList<Image> icons = new ArrayList<Image>();
+		icons.add(loadIcon("icon_16x16"));
+		icons.add(loadIcon("icon_32x32"));
+		icons.add(loadIcon("icon_64x64"));
+		for(Window w : Window.getWindows())
+		{
+			System.out.println(w);
+			w.setIconImages(icons);
+		}
+		
+		menu = new GuiManagerMainMenu();
 	}
 	
 	@Override
@@ -81,6 +123,7 @@ public class Game implements ApplicationListener, InputProcessor
 		
 		spriteBatch.begin();
 		
+		if(menu != null) menu.render(spriteBatch);
 		//TODO: render
 	
 		spriteBatch.end();
@@ -89,6 +132,8 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public void resize(int width, int height)
 	{
+		Game.width = width;
+		Game.height = height;
 		spriteBatch = new SpriteBatch(); 
 	}
 	
@@ -100,8 +145,7 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public boolean keyDown(int key)
 	{
-		keysDown[key] = true;
-		keyPress[key] = true;
+		keys.keyPress(key);
 		return false;
 	}
 	
@@ -115,7 +159,7 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public boolean keyUp(int key)
 	{
-		keysDown[key] = false;
+		keys.keyRelease(key);
 		return false;
 	}
 
@@ -154,6 +198,22 @@ public class Game implements ApplicationListener, InputProcessor
 		return false;
 	}
 	
+	public static Image loadIcon(String name)
+	{
+		name = "images/" + name;
+		if(!File.separator.equals("/")) name.replace("/", File.separator);
+		FileHandle fh = Gdx.files.internal(name + ".png");
+		try
+		{
+			return ImageIO.read(fh.read());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static Texture loadImage(String name)
 	{
 		name = "images/" + name;
@@ -177,11 +237,9 @@ public class Game implements ApplicationListener, InputProcessor
 	
 	public static void tick()
 	{
+		keys.tick();
 		if(paused) return;
-		for(int a = 0; a < keyPress.length; a++)
-		{
-			keyPress[a] = false;
-		}
+		//TODO: tick
 	}
 	
 	public static String numToStr(int num, int len, String filler)

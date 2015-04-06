@@ -1,4 +1,4 @@
-package org.tilegames.hexicube.gunproto;
+package org.tilegames.hexicube.worms;
 
 
 public class FontChar

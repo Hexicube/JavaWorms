@@ -1,4 +1,4 @@
-package org.tilegames.hexicube.gunproto;
+package org.tilegames.hexicube.worms;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -13,6 +13,8 @@ public class DesktopStarter
 		config.title = "Game loading...";
 		config.width = 800;
 		config.height = 600;
+		Game.width = config.width;
+		Game.height = config.height;
 		config.useGL20 = false;
 		
 		new LwjglApplication(new Game(), config);
