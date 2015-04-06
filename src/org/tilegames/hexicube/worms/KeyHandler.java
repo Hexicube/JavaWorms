@@ -7,15 +7,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.badlogic.gdx.Input.Keys;
+
 public class KeyHandler
 {
 	public enum Key
 	{
-		LEFT("Left", 29), RIGHT("Right", 32), UP("Up", 51), DOWN("Down", 47),
+		LEFT("Left", Keys.A), RIGHT("Right", Keys.D), UP("Up", Keys.W), DOWN("Down", Keys.S),
 		
-		LOOK("Look", 129), INV("Inventory", 37), USE("Use", 33),
+		LOOK("Fire", Keys.SPACE), INV("Inventory", Keys.E), USE("Switch Worm", Keys.TAB),
 		
-		PAUSE("Pause", 131);
+		JETDROP("Drop from Jetpack", Keys.Q), PAUSE("Pause", Keys.ESCAPE);
 		
 		private int keyID, defaultValue;
 		private String name;

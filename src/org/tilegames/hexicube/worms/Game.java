@@ -3,12 +3,12 @@ package org.tilegames.hexicube.worms;
 import java.awt.Image;
 import java.awt.Window;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.tilegames.hexicube.worms.KeyHandler.Key;
 import org.tilegames.hexicube.worms.gui.*;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -145,14 +145,20 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public boolean keyDown(int key)
 	{
-		keys.keyPress(key);
+		Key k = Key.getKey(key);
+		if(k == Key.PAUSE)
+		{
+			if(menu == null || !menu.pausesGame()) setMenu(new GuiManagerPauseMenu());
+			else setMenu(null);
+		}
+		else if(menu == null || !menu.keyPress(key)) keys.keyPress(key);
 		return false;
 	}
 	
 	@Override
 	public boolean keyTyped(char character)
 	{
-		//TODO: use for input fields
+		if(currentlyTyping != null) currentlyTyping.keyType(character);
 		return false;
 	}
 
@@ -166,28 +172,33 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button)
 	{
-		//TODO: handle drag stuff
+		if(currentlyDragging != null) currentlyDragging.handleRelease();
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button)
 	{
-		//TODO: handle drag stuff
+		if(menu != null)
+		{
+			Game.currentlyDragging = null;
+			Game.currentlyTyping = null;
+			menu.mousePress(x, height-y-1, pointer);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer)
 	{
-		//TODO: handle drag stuff
+		if(currentlyDragging != null) currentlyDragging.handleDrag(x, height-y-1, pointer);
 		return false;
 	}
 	
 	@Override
 	public boolean touchMoved(int x, int y)
 	{
-		//TODO: handle gui highlighting
+		if(menu != null) menu.mouseMove(x, height-y-1);
 		return false;
 	}
 	
@@ -238,6 +249,7 @@ public class Game implements ApplicationListener, InputProcessor
 	public static void tick()
 	{
 		keys.tick();
+		if(menu != null) menu.tick();
 		if(paused) return;
 		//TODO: tick
 	}

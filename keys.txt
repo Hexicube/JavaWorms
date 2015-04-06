@@ -2,7 +2,8 @@ Left:29
 Right:32
 Up:51
 Down:47
-Look:129
+Fire:62
 Inventory:37
-Use:33
+Switch Worm:61
+Drop from Jetpack:45
 Pause:131
