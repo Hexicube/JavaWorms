@@ -19,3 +19,7 @@ $RECYCLE.BIN/
 
 # Compiled code
 bin/
+
+# Game Specific
+sounds.txt
+keys.txt
