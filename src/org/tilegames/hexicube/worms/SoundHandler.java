@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 public class SoundHandler
 {
-	public int master, music, effects;
+	public int master = 100, music = 100, effects = 100;
 	private HashMap<String, Integer> specificSoundLevels;
 	
 	private File config;
@@ -94,7 +94,7 @@ public class SoundHandler
 		}
 	}
 	
-	public int getSoundLevel(String soundName, String soundType)
+	public float getSoundLevel(String soundName, String soundType)
 	{
 		int val = 1;
 		if(soundType.equals("Master")) val *= master;
@@ -113,7 +113,6 @@ public class SoundHandler
 			val *= 100;
 		}
 		else val *= mod;
-		val /= 10000;
-		return val;
+		return (float)val / 10000f;
 	}
 }

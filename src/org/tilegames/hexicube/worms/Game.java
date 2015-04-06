@@ -103,6 +103,7 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public void pause()
 	{
+		paused = true;
 	}
 	
 	@Override
@@ -140,6 +141,7 @@ public class Game implements ApplicationListener, InputProcessor
 	@Override
 	public void resume()
 	{
+		paused = false;
 	}
 	
 	@Override

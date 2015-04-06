@@ -27,7 +27,8 @@ public class GuiManagerPauseMenu extends GuiManagerBase
 	{
 		if(newGame.checked())
 		{
-			Game.newGame();
+			//TODO
+			//Game.newGame();
 			do Game.setMenu(null);
 			while(Game.menu != null);
 		}
