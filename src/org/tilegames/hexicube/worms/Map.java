@@ -32,7 +32,7 @@ public class Map
 				Entity e = team.get(a);
 				if(e.isRemoved())
 				{
-					entities.remove(a);
+					team.remove(a);
 					a--;
 					size--;
 				}
