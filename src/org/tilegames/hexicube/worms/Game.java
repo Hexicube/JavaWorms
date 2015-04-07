@@ -1,12 +1,7 @@
 package org.tilegames.hexicube.worms;
 
-import java.awt.Image;
-import java.awt.Window;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import org.tilegames.hexicube.worms.KeyHandler.Key;
 import org.tilegames.hexicube.worms.gui.*;
@@ -15,8 +10,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.InputProcessor;
@@ -25,6 +19,9 @@ public class Game implements ApplicationListener, InputProcessor
 {
 	public static final String gameName = "Worms";
 	public static final String versionText = "Proto 1";
+	
+	public static final float DELTA_PER_TICK = .02f;
+	public static final float MIN_SPEED = DELTA_PER_TICK * 2; //2 pixels per second
 	
 	private static SpriteBatch spriteBatch;
 	
@@ -85,17 +82,9 @@ public class Game implements ApplicationListener, InputProcessor
 		keys = new KeyHandler(new File("keys.txt"));
 		sounds = new SoundHandler(new File("sounds.txt"));
 		
-		ArrayList<Image> icons = new ArrayList<Image>();
-		icons.add(loadIcon("icon_16x16"));
-		icons.add(loadIcon("icon_32x32"));
-		icons.add(loadIcon("icon_64x64"));
-		for(Window w : Window.getWindows())
-		{
-			System.out.println(w);
-			w.setIconImages(icons);
-		}
-		
 		menu = new GuiManagerMainMenu();
+		
+		map = new Map();
 	}
 	
 	@Override
@@ -109,7 +98,6 @@ public class Game implements ApplicationListener, InputProcessor
 		paused = true;
 	}
 	
-	public static final float DELTA_PER_TICK = .2f;
 	@Override
 	public void render()
 	{
@@ -120,16 +108,14 @@ public class Game implements ApplicationListener, InputProcessor
 			currentDeltaPassed -= DELTA_PER_TICK;
 			tick();
 		}
-		Gdx.graphics.getGLCommon().glClearColor(0, 0, 0, 1);
-		Gdx.graphics.getGLCommon().glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
-		int screenW = Gdx.graphics.getWidth();
-		int screenH = Gdx.graphics.getHeight();
+		Gdx.graphics.getGL20().glClearColor(0, 0, 1, 1);
+		//Gdx.graphics.getGL20().glClearColor(0, 0, 0, 1);
+		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		spriteBatch.begin();
 		
+		if(map != null && (menu == null || menu.drawBehind())) map.render(spriteBatch);
 		if(menu != null) menu.render(spriteBatch);
-		//TODO: render
 	
 		spriteBatch.end();
 	}
@@ -202,7 +188,7 @@ public class Game implements ApplicationListener, InputProcessor
 	}
 	
 	@Override
-	public boolean touchMoved(int x, int y)
+	public boolean mouseMoved(int x, int y)
 	{
 		if(menu != null) menu.mouseMove(x, height-y-1);
 		return false;
@@ -213,22 +199,6 @@ public class Game implements ApplicationListener, InputProcessor
 	{
 		//TODO: scrolling stuff
 		return false;
-	}
-	
-	public static Image loadIcon(String name)
-	{
-		name = "images/" + name;
-		if(!File.separator.equals("/")) name.replace("/", File.separator);
-		FileHandle fh = Gdx.files.internal(name + ".png");
-		try
-		{
-			return ImageIO.read(fh.read());
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
 	}
 	
 	public static Texture loadImage(String name)

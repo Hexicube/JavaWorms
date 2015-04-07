@@ -3,7 +3,6 @@ Right:32
 Up:51
 Down:47
 Fire:62
+Secondary Fire:61
 Inventory:37
-Switch Worm:61
-Drop from Jetpack:45
 Pause:131

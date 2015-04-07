@@ -21,38 +21,86 @@ public abstract class Entity {
 	}
 
 	protected void resolveMovementX() {
-		float amount = Math.abs(velX/Game.DELTA_PER_TICK);
+		float amount = Math.abs(velX);
 		float sign = velX > 0 ? 1 : -1;
 		
-		while (amount > 0) {
+		while (amount >= 1) {
 			x += sign;
 			amount--;
 			if (collide(x, y)) {
 				velX *= -bounce;
 				x -= sign;
-				break;
+				sign = -sign;
+			}
+		}
+		amount *= sign;
+		float residue = x % 1;
+		x += amount;
+		if(sign == -1)
+		{
+			if(residue + amount <= 0)
+			{
+				if (collide(x, y)) {
+					velX *= -bounce;
+					x -= amount;
+				}
+			}
+		}
+		else
+		{
+			if(residue + amount >= 1)
+			{
+				if (collide(x, y)) {
+					velX *= -bounce;
+					x -= amount;
+				}
 			}
 		}
 	}
 
 	protected void resolveMovementY() {
-		float amount = Math.abs(velY/Game.DELTA_PER_TICK);
-		float sign = velY > 0 ? 1 : -1;
-
-		while (amount > 0) {
+		float amount = Math.abs(velY);
+		float sign = velX > 0 ? 1 : -1;
+		
+		while (amount >= 1) {
 			y += sign;
 			amount--;
 			if (collide(x, y)) {
 				velY *= -bounce;
 				y -= sign;
-				break;
+				sign = -sign;
+			}
+		}
+		amount *= sign;
+		float residue = y % 1;
+		y += amount;
+		if(sign == -1)
+		{
+			if(residue + amount <= 0)
+			{
+				if (collide(x, y)) {
+					velY *= -bounce;
+					y -= amount;
+				}
+			}
+		}
+		else
+		{
+			if(residue + amount >= 1)
+			{
+				if (collide(x, y)) {
+					velY *= -bounce;
+					y -= amount;
+				}
 			}
 		}
 	}
 
-	public void damage(int amount) {}
-
-	public abstract void update();
+	public abstract void tick();
 	public abstract boolean isRemoved();
 	
+	public boolean isAtRest()
+	{
+		return Math.abs(velX) < Game.MIN_SPEED && Math.abs(velY) < Game.MIN_SPEED;
+	}
 }
