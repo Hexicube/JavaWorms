@@ -1,4 +1,4 @@
-package org.tilegames.hexicube.worms;
+package org.tilegames.hexicube.worms.weapons;
 
 public class ExplosionTest extends Explosion
 {
@@ -17,6 +17,6 @@ public class ExplosionTest extends Explosion
 	@Override
 	public int getMapDamageRadius()
 	{
-		return 10;
+		return 100;
 	}
 }

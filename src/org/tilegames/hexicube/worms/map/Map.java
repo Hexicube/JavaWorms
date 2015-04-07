@@ -1,9 +1,11 @@
-package org.tilegames.hexicube.worms;
+package org.tilegames.hexicube.worms.map;
 
 import java.util.ArrayList;
-import java.util.Random;
 
+import org.tilegames.hexicube.worms.Game;
+import org.tilegames.hexicube.worms.Team;
 import org.tilegames.hexicube.worms.entity.*;
+import org.tilegames.hexicube.worms.weapons.Explosion;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -17,19 +19,12 @@ public class Map
 	
 	public int[][] mapData;
 	private Texture tex;
-	private Random rand = new Random();
 	
-	public Map()
+	public Map(MapGenerator generator, int width, int height)
 	{
-		mapData = new int[400][400];
-		for(int x = 0; x < 400; x++)
-		{
-			for(int y = 0; y < 400; y++)
-			{
-				mapData[x][y] = rand.nextInt() | 0x000000FF;
-			}
-		}
-		entities = new ArrayList<Entity>();
+		generator.generate(width, height, Game.rand);
+		mapData = generator.getMapData();
+		entities = generator.getPlacedObjects();
 		teams = new Team[0];
 	}
 	
@@ -62,13 +57,14 @@ public class Map
 				else e.tick();
 			}
 		}
-		explosion(rand.nextInt(400), rand.nextInt(400), new ExplosionTest());
+		//explosion(rand.nextInt(400), rand.nextInt(400), new ExplosionTest());
 	}
 	
 	private Pixmap pm;
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(tex, 0, 0);
+		if(tex == null) redraw(0, 0, 0, 0);
+		batch.draw(tex, 0, mapData[0].length-tex.getHeight());
 	}
 	
 	private void redraw(int x, int y, int w, int h)

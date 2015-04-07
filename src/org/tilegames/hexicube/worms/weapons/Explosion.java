@@ -1,4 +1,4 @@
-package org.tilegames.hexicube.worms;
+package org.tilegames.hexicube.worms.weapons;
 
 public abstract class Explosion
 {

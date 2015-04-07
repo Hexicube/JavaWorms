@@ -5,6 +5,8 @@ import java.util.Random;
 
 import org.tilegames.hexicube.worms.KeyHandler.Key;
 import org.tilegames.hexicube.worms.gui.*;
+import org.tilegames.hexicube.worms.map.Map;
+import org.tilegames.hexicube.worms.map.MapGeneratorBasic;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -84,7 +86,7 @@ public class Game implements ApplicationListener, InputProcessor
 		
 		menu = new GuiManagerMainMenu();
 		
-		map = new Map();
+		map = new Map(new MapGeneratorBasic(), 800, 600);
 	}
 	
 	@Override
