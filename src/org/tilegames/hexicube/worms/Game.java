@@ -49,6 +49,9 @@ public class Game implements ApplicationListener, InputProcessor
 	
 	public static GuiManager menu;
 	
+	
+	public static Map map;
+	
 	public static void setMenu(GuiManager newMenu)
 	{
 		if(newMenu == null)
@@ -106,14 +109,15 @@ public class Game implements ApplicationListener, InputProcessor
 		paused = true;
 	}
 	
+	public static final float DELTA_PER_TICK = .2f;
 	@Override
 	public void render()
 	{
 		currentDeltaPassed += Gdx.graphics.getDeltaTime();
-		if(currentDeltaPassed > .1f) currentDeltaPassed = .1f; //anti mega lag, makes it do 6 ticks after large lag
-		while(currentDeltaPassed >= .01667f) //about 60tps
+		if(currentDeltaPassed > 1f) currentDeltaPassed = 1f;
+		while(currentDeltaPassed >= DELTA_PER_TICK)
 		{
-			currentDeltaPassed -= .01667f;
+			currentDeltaPassed -= DELTA_PER_TICK;
 			tick();
 		}
 		Gdx.graphics.getGLCommon().glClearColor(0, 0, 0, 1);
@@ -253,7 +257,7 @@ public class Game implements ApplicationListener, InputProcessor
 		keys.tick();
 		if(menu != null) menu.tick();
 		if(paused) return;
-		//TODO: tick
+		if(map != null) map.tick();
 	}
 	
 	public static String numToStr(int num, int len, String filler)
